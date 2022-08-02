@@ -1,13 +1,4 @@
-const {
-  selectTopics,
-  selectArticleById,
-} = require("../models/app.models");
-
-exports.getTopics = (req, res, next) => {
-  selectTopics().then((topics) => {
-    res.status(200).send(topics);
-  });
-};
+const { selectArticleById } = require("../models/articles.models.js");
 
 exports.getArticleById = (req, res, next) => {
   const id = req.params.article_id;

@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
-const { getTopics, getArticleById } = require("./controllers/app.controllers");
+const { getTopics } = require("./controllers/topics.controllers.js");
+const { getArticleById } = require("./controllers/articles.controllers.js");
 
 app.get("/api/topics", getTopics);
 
@@ -14,6 +15,10 @@ app.use((err, req, res, next) => {
 
 app.use((err, req, res, next) => {
   res.status(err.status).send({ msg: err.msg });
+});
+
+app.use((err, req, res, next) => {
+  res.status(500).send({ msg: "Server error!" });
 });
 
 app.all("/*", (req, res) => {
