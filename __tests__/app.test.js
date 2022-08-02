@@ -79,3 +79,64 @@ describe("GET /api/articles/:article_id", () => {
       });
   });
 });
+
+describe("PATCH /api/articles/:article_id", () => {
+  test("status:200, responds with the updated article, adding one vote to the votes property", () => {
+    const articleUpdate = {
+      inc_votes: 1,
+    };
+    return request(app)
+      .patch("/api/articles/1")
+      .send(articleUpdate)
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.article).toEqual({
+          article_id: 1,
+          title: "Living in the shadow of a great man",
+          topic: "mitch",
+          author: "butter_bridge",
+          body: "I find this existence challenging",
+          created_at: expect.any(String),
+          votes: 101,
+        });
+      });
+  });
+  test("status:200, responds with the updated article, decrementing the votes property by 100", () => {
+    const articleUpdate = {
+      inc_votes: -100,
+    };
+    return request(app)
+      .patch("/api/articles/1")
+      .send(articleUpdate)
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.article).toEqual({
+          article_id: 1,
+          title: "Living in the shadow of a great man",
+          topic: "mitch",
+          author: "butter_bridge",
+          body: "I find this existence challenging",
+          created_at: expect.any(String),
+          votes: 0,
+        });
+      });
+  });
+  test("status: 400 for missing required information", () => {
+    return request(app)
+      .patch("/api/articles/1")
+      .send({})
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad request, missing information!");
+      });
+  });
+  test("status: 400 for incorrect type input", () => {
+    return request(app)
+      .patch("/api/articles/1")
+      .send({ inc_votes: "abc" })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad request, incorrect type!");
+      });
+  });
+});
