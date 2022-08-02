@@ -22,7 +22,7 @@ describe("ALL /*", () => {
 });
 
 describe("GET /api/topics", () => {
-  test("status:200, responds with an array of topics objects", () => {
+  test("status:200, responds with an array of topic objects", () => {
     return request(app)
       .get("/api/topics")
       .expect(200)
@@ -161,6 +161,28 @@ describe("PATCH /api/articles/:article_id", () => {
       .expect(404)
       .then(({ body }) => {
         expect(body.msg).toBe("Article not found!");
+      });
+  });
+});
+
+describe.only("GET /api/users", () => {
+  test("status:200, responds with an array of user objects", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then(({ body }) => {
+        const users = body;
+        expect(users).toBeInstanceOf(Array);
+        expect(users).toHaveLength(4);
+        users.forEach((user) => {
+          expect(user).toEqual(
+            expect.objectContaining({
+              username: expect.any(String),
+              name: expect.any(String),
+              avatar_url: expect.any(String),
+            })
+          );
+        });
       });
   });
 });
