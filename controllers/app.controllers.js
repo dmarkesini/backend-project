@@ -1,6 +1,5 @@
 const {
   selectTopics,
-  selectArticle,
   selectArticleById,
 } = require("../models/app.models");
 
