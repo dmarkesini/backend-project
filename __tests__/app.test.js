@@ -139,4 +139,28 @@ describe("PATCH /api/articles/:article_id", () => {
         expect(body.msg).toBe("Bad request, incorrect type!");
       });
   });
+  test("status: 400 for an invalid type of article_id", () => {
+    const articleUpdate = {
+      inc_votes: 1,
+    };
+    return request(app)
+      .patch("/api/articles/invalidArticle_id")
+      .send(articleUpdate)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad request!");
+      });
+  });
+  test("status: 404 for an article_id that does not exist in the database", () => {
+    const articleUpdate = {
+      inc_votes: 1,
+    };
+    return request(app)
+      .patch("/api/articles/2000")
+      .send(articleUpdate)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Article not found!");
+      });
+  });
 });

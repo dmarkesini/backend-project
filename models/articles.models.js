@@ -29,6 +29,9 @@ exports.updateArticleById = (inc_votes, id) => {
       `UPDATE articles SET votes = ${inc_votes} + votes WHERE article_id = ${id} RETURNING *`
     )
     .then(({ rows }) => {
+      if (rows[0] === undefined) {
+        return Promise.reject({ status: 404, msg: "Article not found!" });
+      }
       return rows[0];
     });
 };
