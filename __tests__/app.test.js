@@ -204,3 +204,44 @@ describe("GET /api/users", () => {
       });
   });
 });
+describe("GET /api/articles/:article_id/comments", () => {
+  test("status:200, responds with an array of comments from the given article_id", () => {
+    return request(app).get("/api/articles/1/comments").expect(200);
+  });
+  test("GET endpoint responds with an object of the requested properties", () => {
+    const article_id = 1;
+    return request(app)
+      .get(`/api/articles/${article_id}/comments`)
+      .then(({ body }) => {
+        const comments = body;
+        expect(comments).toBeInstanceOf(Array);
+        expect(comments).toHaveLength(11);
+        comments.forEach((comment) => {
+          expect(comment).toEqual({
+            comment_id: expect.any(Number),
+            votes: expect.any(Number),
+            created_at: expect.any(String),
+            author: expect.any(String),
+            body: expect.any(String),
+          });
+        });
+      });
+  });
+
+  test("status: 400 for an invalid type of article_id", () => {
+    return request(app)
+      .get("/api/articles/abc/comments")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad request!");
+      });
+  });
+  test("status: 404 for an article_id that does not exist in the database", () => {
+    return request(app)
+      .get("/api/articles/5000/comments")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Comment not found!");
+      });
+  });
+});
