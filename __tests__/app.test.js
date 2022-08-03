@@ -3,7 +3,6 @@ const request = require("supertest");
 const db = require("../db/connection");
 const testData = require("../db/data/test-data/index");
 const seed = require("../db/seeds/seed");
-const { expect } = require("@jest/globals");
 
 afterAll(() => {
   db.end();
@@ -154,7 +153,7 @@ describe("PATCH /api/articles/:article_id", () => {
       .send({ inc_votes: "abc" })
       .expect(400)
       .then(({ body }) => {
-        expect(body.msg).toBe("Bad request, incorrect type!");
+        expect(body.msg).toBe("Bad request, incorrect input!");
       });
   });
   test("status: 400 for an invalid type of article_id", () => {
@@ -201,6 +200,47 @@ describe("GET /api/users", () => {
             })
           );
         });
+      });
+  });
+});
+describe("POST /api/articles/:article_id/comments", () => {
+  test("status:201, responds with comment newly added to the database", () => {
+    const newComment = {
+      username: "icellusedkars",
+      body: "I hate streaming eyes even more",
+    };
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send(newComment)
+      .expect(201)
+      .then(({ body }) => {
+        expect(body.comment).toEqual({
+          comment_id: 19,
+          body: "I hate streaming eyes even more",
+          article_id: 1,
+          author: "icellusedkars",
+          votes: 0,
+          created_at: expect.any(String),
+        });
+      });
+  });
+
+  test("status: 400 for missing required information", () => {
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send({})
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad request, missing information!");
+      });
+  });
+  test("status: 400 for wrong type", () => {
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send({ username: 123, body: 456 })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad request, incorrect input!");
       });
   });
 });
