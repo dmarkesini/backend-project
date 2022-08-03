@@ -183,23 +183,25 @@ describe("PATCH /api/articles/:article_id", () => {
   });
 });
 
-describe("GET /api/users", () => {
-  test("status:200, responds with an array of user objects", () => {
+describe("GET /api/articles", () => {
+  test("status:200, responds with an array of article objects", () => {
     return request(app)
-      .get("/api/users")
+      .get("/api/articles")
       .expect(200)
       .then(({ body }) => {
-        const users = body;
-        expect(users).toBeInstanceOf(Array);
-        expect(users).toHaveLength(4);
-        users.forEach((user) => {
-          expect(user).toEqual(
-            expect.objectContaining({
-              username: expect.any(String),
-              name: expect.any(String),
-              avatar_url: expect.any(String),
-            })
-          );
+        const articles = body;
+        expect(articles).toBeInstanceOf(Array);
+        expect(articles).toHaveLength(12);
+        articles.forEach((article) => {
+          expect(article).toEqual({
+            author: expect.any(String),
+            title: expect.any(String),
+            article_id: expect.any(Number),
+            topic: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            comment_count: expect.any(Number),
+          });
         });
       });
   });
