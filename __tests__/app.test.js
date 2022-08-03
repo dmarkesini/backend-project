@@ -63,7 +63,7 @@ describe("GET /api/articles/:article_id", () => {
         });
       });
   });
-  test("GET endpoint responds with an object of the requested properties", () => {
+  test("GET endpoint responds with an object with the updated property comment_count", () => {
     const article_id = 1;
     return request(app)
       .get(`/api/articles/${article_id}`)
