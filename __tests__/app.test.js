@@ -3,6 +3,7 @@ const request = require("supertest");
 const db = require("../db/connection");
 const testData = require("../db/data/test-data/index");
 const seed = require("../db/seeds/seed");
+const { expect } = require("@jest/globals");
 
 afterAll(() => {
   db.end();
@@ -50,6 +51,22 @@ describe("GET /api/articles/:article_id", () => {
     const article_id = 1;
     return request(app)
       .get(`/api/articles/${article_id}`)
+      .then(() => {
+        expect.objectContaining({
+          article_id: article_id,
+          title: "Living in the shadow of a great man",
+          topic: "mitch",
+          author: "butter_bridge",
+          body: "I find this existence challenging",
+          created_at: expect.any(String),
+          votes: 100,
+        });
+      });
+  });
+  test("GET endpoint responds with an object of the requested properties", () => {
+    const article_id = 1;
+    return request(app)
+      .get(`/api/articles/${article_id}`)
       .then(({ body }) => {
         expect(body.article).toEqual({
           article_id: article_id,
@@ -59,7 +76,7 @@ describe("GET /api/articles/:article_id", () => {
           body: "I find this existence challenging",
           created_at: expect.any(String),
           votes: 100,
-          comment_count: "11",
+          comment_count: 11,
         });
       });
   });
