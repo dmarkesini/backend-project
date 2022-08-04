@@ -3,7 +3,6 @@ const request = require("supertest");
 const db = require("../db/connection");
 const testData = require("../db/data/test-data/index");
 const seed = require("../db/seeds/seed");
-const { expect } = require("@jest/globals");
 
 afterAll(() => {
   db.end();
@@ -204,10 +203,36 @@ describe("GET /api/users", () => {
       });
   });
 });
+
+describe("GET /api/articles", () => {
+  test("status:200, responds with an array of article objects", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then(({ body }) => {
+        const articles = body;
+        expect(articles).toBeInstanceOf(Array);
+        expect(articles).toHaveLength(12);
+        articles.forEach((article) => {
+          expect(article).toEqual({
+            author: expect.any(String),
+            title: expect.any(String),
+            article_id: expect.any(Number),
+            topic: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            comment_count: expect.any(Number),
+          });
+        });
+      });
+  });
+});
+
 describe("GET /api/articles/:article_id/comments", () => {
   test("status:200, responds with an array of comments from the given article_id", () => {
     return request(app).get("/api/articles/1/comments").expect(200);
   });
+
   test("GET endpoint responds with an object of the requested properties", () => {
     const article_id = 1;
     return request(app)
@@ -227,7 +252,6 @@ describe("GET /api/articles/:article_id/comments", () => {
         });
       });
   });
-
   test("status: 400 for an invalid type of article_id", () => {
     return request(app)
       .get("/api/articles/abc/comments")
