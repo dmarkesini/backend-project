@@ -11,7 +11,6 @@ exports.removeCommentById = (id) => {
     .query(`SELECT * FROM comments WHERE comment_id = ${id}`)
     .then(({ rows }) => {
       if (rows[0] === undefined) {
-        console.log(rows[0]);
         return Promise.reject({ status: 404, msg: "Comment not found!" });
       }
       return db
