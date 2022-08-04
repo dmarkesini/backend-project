@@ -183,6 +183,28 @@ describe("PATCH /api/articles/:article_id", () => {
   });
 });
 
+describe("GET /api/users", () => {
+  test("status:200, responds with an array of user objects", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then(({ body }) => {
+        const users = body;
+        expect(users).toBeInstanceOf(Array);
+        expect(users).toHaveLength(4);
+        users.forEach((user) => {
+          expect(user).toEqual(
+            expect.objectContaining({
+              username: expect.any(String),
+              name: expect.any(String),
+              avatar_url: expect.any(String),
+            })
+          );
+        });
+      });
+  });
+});
+
 describe("GET /api/articles", () => {
   test("status:200, responds with an array of article objects", () => {
     return request(app)
