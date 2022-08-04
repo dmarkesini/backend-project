@@ -348,6 +348,14 @@ describe("GET /api/articles", () => {
         expect(body.msg).toBe("Topic not found!");
       });
   });
+  test("status: 404 for a topic that exists in the database but has no articles", () => {
+    return request(app)
+      .get("/api/articles?topic=paper")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Article not found!");
+      });
+  });
   test("status: 400 for a wrong sort_by query", () => {
     return request(app)
       .get("/api/articles?sort_by=abc")

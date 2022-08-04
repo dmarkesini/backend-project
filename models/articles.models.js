@@ -99,43 +99,49 @@ exports.selectArticles = ({
 }) => {
   const validSortQuery = ["votes", "created_at"];
   const validOrderQuery = ["ASC", "DESC"];
+  const baseQuery = `SELECT articles.article_id, articles.author, articles.title, articles.topic, articles.created_at, articles.votes,
+         COUNT(comments.article_id) :: INT AS comment_count
+         FROM articles LEFT JOIN comments 
+         ON articles.article_id = comments.article_id
+         GROUP BY articles.article_id
+         ORDER BY articles.${sort_by} ${order};`;
+
+  const queryWithTopic = `${baseQuery.slice(
+    0,
+    baseQuery.indexOf("GROUP")
+  )} WHERE articles.topic = '${topic}' ${baseQuery.slice(
+    baseQuery.indexOf("GROUP")
+  )}`;
+
   if (!validSortQuery.includes(sort_by) || !validOrderQuery.includes(order)) {
     return Promise.reject({ status: 400, msg: "Invalid query!" });
   }
   if (topic) {
     return db
-      .query(`SELECT * FROM articles WHERE topic = '${topic}'`)
+      .query(`SELECT * FROM topics WHERE slug = '${topic}'`)
       .then(({ rows }) => {
         if (rows.length === 0) {
           return Promise.reject({ status: 404, msg: "Topic not found!" });
         } else {
           return db
-            .query(
-              `SELECT articles.article_id, articles.author, articles.title, articles.topic, articles.created_at, articles.votes,
-      COUNT(comments.article_id) :: INT AS comment_count
-      FROM articles LEFT JOIN comments 
-      ON articles.article_id = comments.article_id
-      WHERE articles.topic = '${topic}'
-      GROUP BY articles.article_id
-      ORDER BY articles.${sort_by} ${order};`
-            )
+            .query(`SELECT * FROM articles WHERE topic = '${topic}'`)
             .then(({ rows }) => {
-              return rows;
+              if (rows.length === 0) {
+                return Promise.reject({
+                  status: 404,
+                  msg: "Article not found!",
+                });
+              } else {
+                return db.query(queryWithTopic).then(({ rows }) => {
+                  return rows;
+                });
+              }
             });
         }
       });
   } else {
-    return db
-      .query(
-        `SELECT articles.article_id, articles.author, articles.title, articles.topic, articles.created_at, articles.votes,
-      COUNT(comments.article_id) :: INT AS comment_count
-      FROM articles LEFT JOIN comments 
-      ON articles.article_id = comments.article_id
-      GROUP BY articles.article_id
-      ORDER BY articles.${sort_by} ${order};`
-      )
-      .then(({ rows }) => {
-        return rows;
-      });
+    return db.query(baseQuery).then(({ rows }) => {
+      return rows;
+    });
   }
 };
