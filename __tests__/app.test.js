@@ -268,4 +268,12 @@ describe("GET /api/articles/:article_id/comments", () => {
         expect(body.msg).toBe("Comment not found!");
       });
   });
+  test("status: 404 for an article_id that exists but has no comments", () => {
+    return request(app)
+      .get("/api/articles/2/comments")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Comment not found!");
+      });
+  });
 });
