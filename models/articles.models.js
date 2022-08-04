@@ -26,7 +26,6 @@ exports.updateArticleById = (inc_votes, id) => {
       msg: "Bad request, incorrect type!",
     });
   }
-
   return db
     .query(
       `UPDATE articles SET votes = ${inc_votes} + votes WHERE article_id = ${id} RETURNING *`
@@ -36,5 +35,20 @@ exports.updateArticleById = (inc_votes, id) => {
         return Promise.reject({ status: 404, msg: "Article not found!" });
       }
       return rows[0];
+    });
+};
+
+exports.selectArticles = () => {
+  return db
+    .query(
+      `SELECT articles.article_id, articles.author, articles.title, articles.topic, articles.created_at, articles.votes,
+ COUNT(comments.article_id) :: INT AS comment_count
+ FROM articles LEFT JOIN comments 
+ ON articles.article_id = comments.article_id
+ GROUP BY articles.article_id
+ ORDER BY articles.created_at DESC;`
+    )
+    .then(({ rows }) => {
+      return rows;
     });
 };
