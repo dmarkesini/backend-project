@@ -3,7 +3,6 @@ const request = require("supertest");
 const db = require("../db/connection");
 const testData = require("../db/data/test-data/index");
 const seed = require("../db/seeds/seed");
-const { expect } = require("@jest/globals");
 
 afterAll(() => {
   db.end();
@@ -347,6 +346,22 @@ describe("GET /api/articles", () => {
       .expect(404)
       .then(({ body }) => {
         expect(body.msg).toBe("Topic not found!");
+      });
+  });
+  test("status: 400 for a wrong sort_by query", () => {
+    return request(app)
+      .get("/api/articles?sort_by=abc")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Invalid query!");
+      });
+  });
+  test("status: 400 for a wrong order query", () => {
+    return request(app)
+      .get("/api/articles?order=abc")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Invalid query!");
       });
   });
 });

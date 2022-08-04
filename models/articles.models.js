@@ -97,6 +97,11 @@ exports.selectArticles = ({
   order = "DESC",
   topic,
 }) => {
+  const validSortQuery = ["votes", "created_at"];
+  const validOrderQuery = ["ASC", "DESC"];
+  if (!validSortQuery.includes(sort_by) || !validOrderQuery.includes(order)) {
+    return Promise.reject({ status: 400, msg: "Invalid query!" });
+  }
   if (topic) {
     return db
       .query(`SELECT * FROM articles WHERE topic = '${topic}'`)
