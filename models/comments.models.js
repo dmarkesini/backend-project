@@ -8,11 +8,18 @@ exports.removeCommentById = (id) => {
     });
   }
   return db
-    .query(`DELETE FROM comments WHERE comment_id = ${id} RETURNING *`)
+    .query(`SELECT * FROM comments WHERE comment_id = ${id} RETURNING *`)
     .then(({ rows }) => {
       if (rows[0] === undefined) {
-        return Promise.reject({ status: 404, msg: "Comment not found!" });
+        return Promise.reject({ status: 400, msg: "Comment not found!" });
       }
-      return rows[0];
+      return db
+        .query(`DELETE FROM comments WHERE comment_id = ${id} RETURNING *`)
+        .then(({ rows }) => {
+          if (rows[0] === undefined) {
+            return Promise.reject({ status: 404, msg: "Comment not found!" });
+          }
+          return rows[0];
+        });
     });
 };
