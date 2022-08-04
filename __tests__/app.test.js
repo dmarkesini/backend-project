@@ -243,6 +243,14 @@ describe("POST /api/articles/:article_id/comments", () => {
         expect(body.msg).toBe("Bad request, incorrect input!");
       });
   });
+  test("status: 404 for an article_id that does not exist in the database", () => {
+    return request(app)
+      .get("/api/articles/5000/comments")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Article not found!");
+      });
+  });
 });
 
 describe("GET /api/articles", () => {

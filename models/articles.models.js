@@ -55,13 +55,21 @@ exports.insertComment = (id, body) => {
   }
 
   return db
-    .query(
-      `INSERT INTO comments (article_id, author, body)
-VALUES (${id},'${body.username}', '${body.body}')
-RETURNING *`
-    )
+    .query(`SELECT * FROM articles WHERE article_id = ${id}`)
     .then(({ rows }) => {
-      return rows[0];
+      if (rows[0] === undefined) {
+        return Promise.reject({ status: 404, msg: "Article not found!" });
+      } else {
+        return db
+          .query(
+            `INSERT INTO comments (article_id, author, body)
+             VALUES (${id},'${body.username}', '${body.body}')
+             RETURNING *`
+          )
+          .then(({ rows }) => {
+            return rows[0];
+          });
+      }
     });
 };
 
