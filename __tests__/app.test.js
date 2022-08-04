@@ -228,7 +228,7 @@ describe("GET /api/articles", () => {
   });
 });
 
-describe.only("DELETE /api/comments/:comment_id", () => {
+describe("DELETE /api/comments/:comment_id", () => {
   test("status:204, responds with an empty response body", () => {
     return request(app).delete("/api/comments/2").expect(204);
   });
@@ -240,12 +240,12 @@ describe.only("DELETE /api/comments/:comment_id", () => {
         expect(body.msg).toBe("Comment not found!");
       });
   });
-  test("status: 400 for an invalid comment_id ", () => {
-    return request(app)
-      .delete("/api/comments/invalidComment_id")
-      .expect(400)
-      .then(({ body }) => {
-        expect(body.msg).toBe("Bad request, invalid id!");
-      });
-  });
+  // test("status: 400 for an invalid comment_id ", () => {
+  //   return request(app)
+  //     .delete("/api/comments/invalidComment_id")
+  //     .expect(400)
+  //     .then(({ body }) => {
+  //       expect(body.msg).toBe("Bad request, invalid id!");
+  //     });
+  // });
 });
