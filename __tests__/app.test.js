@@ -228,11 +228,11 @@ describe("GET /api/articles", () => {
   });
 });
 
-// describe("DELETE /api/comments/:comment_id", () => {
-//   test("status:204, responds with an empty response body", () => {
-//     return request(app).delete("/api/comments/2").expect(204);
-//   });
-  // test("status: 404 for a comment_id that does not exist in the database", () => {
+describe("DELETE /api/comments/:comment_id", () => {
+  test("status:204, responds with an empty response body", () => {
+    return request(app).delete("/api/comments/2").expect(204);
+  });
+  // test.only("status: 404 for a comment_id that does not exist in the database", () => {
   //   return request(app)
   //     .delete("/api/comments/1000")
   //     .expect(404)
@@ -248,4 +248,4 @@ describe("GET /api/articles", () => {
   //       expect(body.msg).toBe("Bad request, invalid id!");
   //     });
   // });
-// });
+});
