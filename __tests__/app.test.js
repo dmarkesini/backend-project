@@ -299,7 +299,7 @@ describe("GET /api/articles", () => {
   });
   test("status:200, responds with an array of article objects that are sorted by the provided queries", () => {
     return request(app)
-      .get("/api/articles?sort_by=votes&order=asc")
+      .get("/api/articles?sort_by=votes&order=ASC")
       .expect(200)
       .then(({ body }) => {
         const articles = body;
