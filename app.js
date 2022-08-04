@@ -4,7 +4,9 @@ const { getTopics } = require("./controllers/topics.controllers.js");
 const {
   getArticleById,
   patchArticleById,
-  postComment
+  postComment,
+  getCommentsById,
+  getArticles,
 } = require("./controllers/articles.controllers.js");
 
 const { getUsers } = require("./controllers/users.controllers.js");
@@ -13,11 +15,15 @@ app.use(express.json());
 
 app.get("/api/topics", getTopics);
 
+app.get("/api/articles", getArticles);
+
 app.get("/api/articles/:article_id", getArticleById);
+
+app.get("/api/articles/:article_id/comments", getCommentsById);
 
 app.get("/api/users", getUsers);
 
-app.post("/api/articles/:article_id/comments", postComment)
+app.post("/api/articles/:article_id/comments", postComment);
 
 app.patch("/api/articles/:article_id", patchArticleById);
 
