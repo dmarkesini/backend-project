@@ -265,15 +265,17 @@ describe("GET /api/articles/:article_id/comments", () => {
       .get("/api/articles/5000/comments")
       .expect(404)
       .then(({ body }) => {
-        expect(body.msg).toBe("Comment not found!");
+        expect(body.msg).toBe("Article not found!");
       });
   });
-  test("status: 404 for an article_id that exists but has no comments", () => {
+  test("status: 200 for an article_id that exists but has no comments", () => {
     return request(app)
       .get("/api/articles/2/comments")
-      .expect(404)
+      .expect(200)
       .then(({ body }) => {
-        expect(body.msg).toBe("Comment not found!");
+        expect(body).toEqual([]);
+        expect(body).toBeInstanceOf(Array);
+        expect(body).toHaveLength(0);
       });
   });
 });

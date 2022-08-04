@@ -40,15 +40,20 @@ exports.updateArticleById = (inc_votes, id) => {
 
 exports.selectCommentsById = (id) => {
   return db
-    .query(
-      `SELECT comment_id, votes, created_at, author, body FROM comments
- WHERE article_id = ${id}`
-    )
+    .query(`SELECT * FROM articles WHERE article_id = ${id}`)
     .then(({ rows }) => {
       if (rows.length === 0) {
-        return Promise.reject({ status: 404, msg: "Comment not found!" });
+        return Promise.reject({ status: 404, msg: "Article not found!" });
+      } else {
+        return db
+          .query(
+            `SELECT comment_id, votes, created_at, author, body FROM comments
+             WHERE article_id = ${id}`
+          )
+          .then(({ rows }) => {
+            return rows;
+          });
       }
-      return rows;
     });
 };
 
