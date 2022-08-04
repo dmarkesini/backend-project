@@ -92,17 +92,45 @@ exports.selectCommentsById = (id) => {
     });
 };
 
-exports.selectArticles = () => {
-  return db
-    .query(
-      `SELECT articles.article_id, articles.author, articles.title, articles.topic, articles.created_at, articles.votes,
- COUNT(comments.article_id) :: INT AS comment_count
- FROM articles LEFT JOIN comments 
- ON articles.article_id = comments.article_id
- GROUP BY articles.article_id
- ORDER BY articles.created_at DESC;`
-    )
-    .then(({ rows }) => {
-      return rows;
-    });
+exports.selectArticles = ({
+  sort_by = "created_at",
+  order = "DESC",
+  topic,
+}) => {
+  if (topic) {
+    return db
+      .query(`SELECT * FROM articles WHERE topic = '${topic}'`)
+      .then(({ rows }) => {
+        if (rows.length === 0) {
+          return Promise.reject({ status: 404, msg: "Topic not found!" });
+        } else {
+          return db
+            .query(
+              `SELECT articles.article_id, articles.author, articles.title, articles.topic, articles.created_at, articles.votes,
+      COUNT(comments.article_id) :: INT AS comment_count
+      FROM articles LEFT JOIN comments 
+      ON articles.article_id = comments.article_id
+      WHERE articles.topic = '${topic}'
+      GROUP BY articles.article_id
+      ORDER BY articles.${sort_by} ${order};`
+            )
+            .then(({ rows }) => {
+              return rows;
+            });
+        }
+      });
+  } else {
+    return db
+      .query(
+        `SELECT articles.article_id, articles.author, articles.title, articles.topic, articles.created_at, articles.votes,
+      COUNT(comments.article_id) :: INT AS comment_count
+      FROM articles LEFT JOIN comments 
+      ON articles.article_id = comments.article_id
+      GROUP BY articles.article_id
+      ORDER BY articles.${sort_by} ${order};`
+      )
+      .then(({ rows }) => {
+        return rows;
+      });
+  }
 };
