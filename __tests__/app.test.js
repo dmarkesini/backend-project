@@ -3,7 +3,6 @@ const request = require("supertest");
 const db = require("../db/connection");
 const testData = require("../db/data/test-data/index");
 const seed = require("../db/seeds/seed");
-const { expect } = require("@jest/globals");
 
 afterAll(() => {
   db.end();
@@ -225,6 +224,28 @@ describe("GET /api/articles", () => {
             comment_count: expect.any(Number),
           });
         });
+      });
+  });
+});
+
+describe.only("DELETE /api/comments/:comment_id", () => {
+  test("status:204, responds with an empty response body", () => {
+    return request(app).delete("/api/comments/2").expect(204);
+  });
+  test("status: 404 for a comment_id that does not exist in the database", () => {
+    return request(app)
+      .delete("/api/comments/1000")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Comment not found!");
+      });
+  });
+  test("status: 400 for an invalid comment_id ", () => {
+    return request(app)
+      .delete("/api/comments/invalidComment_id")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad request, invalid id!");
       });
   });
 });
