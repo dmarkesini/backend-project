@@ -425,3 +425,25 @@ describe("GET /api/articles/:article_id/comments", () => {
       });
   });
 });
+
+describe("DELETE /api/comments/:comment_id", () => {
+  test("status:204, responds with an empty response body", () => {
+    return request(app).delete("/api/comments/2").expect(204);
+  });
+  test("status: 404 for a comment_id that does not exist in the database", () => {
+    return request(app)
+      .delete("/api/comments/1000")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Comment not found!");
+      });
+  });
+  test("status: 400 for an invalid comment_id ", () => {
+    return request(app)
+      .delete("/api/comments/abc")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad request, invalid id!");
+      });
+  });
+});
