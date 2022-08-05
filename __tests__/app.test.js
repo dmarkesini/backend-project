@@ -275,6 +275,103 @@ describe("GET /api/articles", () => {
         });
       });
   });
+  test("status:200, responds with an array of article objects that are sorted by date and with descending order by default when passed no queries", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then(({ body }) => {
+        const articles = body;
+        expect(articles).toBeInstanceOf(Array);
+        expect(articles).toHaveLength(12);
+        expect(articles).toBeSortedBy("created_at", { descending: true });
+        articles.forEach((article) => {
+          expect(article).toEqual({
+            author: expect.any(String),
+            title: expect.any(String),
+            article_id: expect.any(Number),
+            topic: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            comment_count: expect.any(Number),
+          });
+        });
+      });
+  });
+  test("status:200, responds with an array of article objects that are sorted by the provided queries", () => {
+    return request(app)
+      .get("/api/articles?sort_by=votes&order=ASC")
+      .expect(200)
+      .then(({ body }) => {
+        const articles = body;
+        expect(articles).toBeInstanceOf(Array);
+        expect(articles).toHaveLength(12);
+        expect(articles).toBeSortedBy("votes", { descending: false });
+        articles.forEach((article) => {
+          expect(article).toEqual({
+            author: expect.any(String),
+            title: expect.any(String),
+            article_id: expect.any(Number),
+            topic: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            comment_count: expect.any(Number),
+          });
+        });
+      });
+  });
+  test("status:200, responds with an array of article objects filtered by topic", () => {
+    return request(app)
+      .get("/api/articles?topic=mitch")
+      .expect(200)
+      .then(({ body }) => {
+        const articles = body;
+        expect(articles).toBeInstanceOf(Array);
+        expect(articles).toHaveLength(11);
+        articles.forEach((article) => {
+          expect(article).toEqual({
+            author: expect.any(String),
+            title: expect.any(String),
+            article_id: expect.any(Number),
+            topic: "mitch",
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            comment_count: expect.any(Number),
+          });
+        });
+      });
+  });
+  test("status: 404 for a topic that does not exist in the database", () => {
+    return request(app)
+      .get("/api/articles?topic=abc")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Topic not found!");
+      });
+  });
+  test("status: 404 for a topic that exists in the database but has no articles", () => {
+    return request(app)
+      .get("/api/articles?topic=paper")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Article not found!");
+      });
+  });
+  test("status: 400 for a wrong sort_by query", () => {
+    return request(app)
+      .get("/api/articles?sort_by=abc")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Invalid query!");
+      });
+  });
+  test("status: 400 for a wrong order query", () => {
+    return request(app)
+      .get("/api/articles?order=abc")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Invalid query!");
+      });
+  });
 });
 
 describe("GET /api/articles/:article_id/comments", () => {
