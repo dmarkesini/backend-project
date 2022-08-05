@@ -27,25 +27,27 @@ To run the project locally you need to clone the repository and then run the fol
 
 <b>NOTE: The minimum version of Node.js to run the project is v6.9 and v8.7 for Postgres. </b>
 
-1. First, to clone the project on your device enter this command into the terminal
+1. First, please fork the project from this link https://github.com/dmarkesini/Backend-project.git
+
+2. To clone the project on your device enter this command into the terminal along with the link of your forked project
 
 ```sh
-git clone https://github.com/dmarkesini/Backend-project.git
+git clone <project_name_here>
 ```
 
-2. Then, go into the directory and open the project
+3. Then, go into the directory and open the project
 
 ```sh
 cd Backend-project
 ```
 
-3. Install the dependencies with this command
+4. Install the dependencies with this command
 
 ```sh
 npm install
 ```
 
-4. To be able to run this project locally, you will need to create the following two <b>.env</b> files in the main directory:
+5. To be able to run this project locally, you will need to create the following two <b>.env</b> files in the main directory:
 
 ```sh
 1. .env.test
@@ -56,13 +58,13 @@ Inside the files you need to add this: <b>PGDATABASE=<database_name_here></b> wh
 
 Lastly, you need to make sure these files are inside the .gitignored file. You can do this with writing <b>.env.\*</b> inside .gitignore.
 
-5. Once you have all dependencies installed, you can go ahead and seed the local database
+6. Once you have all dependencies installed, you can go ahead and seed the local database
 
 ```sh
 npm run setup-dbs
 ```
 
-6. Once the database is seeded, you are good to go! You can run the tests with Jest by typing the following
+7. Once the database is seeded, you are good to go! You can run the tests with Jest by typing the following
 
 ```sh
 npm test app.test.js
