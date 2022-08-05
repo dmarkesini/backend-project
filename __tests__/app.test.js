@@ -3,6 +3,7 @@ const request = require("supertest");
 const db = require("../db/connection");
 const testData = require("../db/data/test-data/index");
 const seed = require("../db/seeds/seed");
+const endpoints = require("../endpoints.json");
 
 afterAll(() => {
   db.end();
@@ -444,6 +445,19 @@ describe("DELETE /api/comments/:comment_id", () => {
       .expect(400)
       .then(({ body }) => {
         expect(body.msg).toBe("Bad request, invalid id!");
+      });
+  });
+});
+
+describe("GET /api", () => {
+  test("status:200, responds with a json object of all available endpoints of the API", () => {
+    return request(app)
+      .get("/api")
+      .expect(200)
+      .then(({ body }) => {
+        const routes = body;
+        expect(routes).toBeInstanceOf(Object);
+        expect(routes).toEqual(endpoints);
       });
   });
 });
