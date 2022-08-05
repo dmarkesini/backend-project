@@ -11,6 +11,12 @@ const {
 const { getUsers } = require("./controllers/users.controllers.js");
 const { deleteCommentById } = require("./controllers/comments.controllers.js");
 const { getRoutes } = require("./controllers/api.controller.js");
+const {
+  handleCustomErrors,
+  handlePSQLErrors,
+  handleServerError,
+  handleWrongEndpointErrors,
+} = require("./errors.js");
 
 app.use(express.json());
 
@@ -32,22 +38,12 @@ app.patch("/api/articles/:article_id", patchArticleById);
 
 app.delete("/api/comments/:comment_id", deleteCommentById);
 
-app.use((err, req, res, next) => {
-  if (err.code === "22P02" || err.code === "42703") {
-    res.status(400).send({ msg: "Bad request!" });
-  } else next(err);
-});
+app.use(handlePSQLErrors);
 
-app.use((err, req, res, next) => {
-  res.status(err.status).send({ msg: err.msg });
-});
+app.use(handleCustomErrors);
 
-app.use((err, req, res, next) => {
-  res.status(500).send({ msg: "Server error!" });
-});
+app.use(handleServerError);
 
-app.all("/*", (req, res) => {
-  res.status(404).send({ msg: "Endpoint not found!" });
-});
+app.use(handleWrongEndpointErrors);
 
 module.exports = app;
