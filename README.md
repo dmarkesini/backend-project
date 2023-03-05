@@ -11,7 +11,7 @@
 
 This is a back-end API project built with Node.js which is the back-end JavaScript environment. This project enables us to perform CRUD operations for several endpoints.
 
-Hosted version: https://social-interactive-project.herokuapp.com/api
+Hosted version: https://news-interactive.onrender.com/api
 
 ### Built with
 
@@ -28,7 +28,7 @@ To run the project locally you need to clone the repository and then run the fol
 
 <b>NOTE: The minimum version of Node.js to run the project is v6.9 and v8.7 for Postgres. </b>
 
-1. First, please fork the project from this link https://github.com/dmarkesini/Backend-project.git
+1. First, please fork the project from this link https://github.com/dmarkesini/backend-project.git
 
 2. To clone the project on your device enter this command into the terminal along with the link of your forked project
 
@@ -39,20 +39,21 @@ git clone <project_name_here>
 3. Then, go into the directory and open the project
 
 ```sh
-cd Backend-project
+cd backend-project
 ```
 
-4. Install the dependencies with this command
+4. Install the dependencies
 
 ```sh
 npm install
 ```
 
-5. To be able to run this project locally, you will need to create the following two <b>.env</b> files in the main directory:
+5. To be able to run this project locally, you will need to create the following three <b>.env</b> files in the main directory:
 
 ```sh
 1. .env.test
 2. .env.development
+3. .env.production
 ```
 
 Inside the files you need to add this: <b>PGDATABASE=<database_name_here></b> which will need to include the right database name for that environment. Please check the <b> /db/setup.sql</b> file for the accurate database names.
@@ -75,7 +76,7 @@ npm test app.test.js
 
 ## Hosting
 
-This Node.js app is hosted on [Heroku](https://dashboard.heroku.com/apps) at https://social-interactive-project.herokuapp.com/api.
-Heroku is a platform as a service (PaaS) that enables developers to build, run, and operate applications entirely in the cloud, for free.
+This Node.js app is hosted on [Render](https://render.com/) at https://news-interactive.onrender.com/api, which then my frontend project is fetching the data from, please see here for more details https://github.com/dmarkesini/frontend-project.
+The PostgreSQL database was hosted on [ElephantSQL](https://www.elephantsql.com/).
 
 ---
